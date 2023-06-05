@@ -118,6 +118,10 @@ class Ui_RescaleDialog(QDialog):
         self.buttonBox.accepted.connect(self.validate_input)
         self.buttonBox.rejected.connect(self.reject)
 
+        self.validator = QIntValidator()
+        self.lineEdit_new_width.setValidator(self.validator)
+        self.lineEdit_new_height.setValidator(self.validator)
+
         QMetaObject.connectSlotsByName(Dialog)
         self.setLayout(self.verticalLayout_main)
     # setupUi
@@ -133,6 +137,12 @@ class Ui_RescaleDialog(QDialog):
         self.label_new_width.setText(QCoreApplication.translate("Dialog", u"New width", None))
         self.label_new_height.setText(QCoreApplication.translate("Dialog", u"New height", None))
     # retranslateUi
+
+    def validate_input(self):
+        if int(self.lineEdit_new_width.text()) <= 0 or int(self.lineEdit_new_height.text()) <= 0:
+            QMessageBox.warning(self, 'Error', 'Width and height have to positive numbers')
+        else:
+            self.accept()
 
     def get_parameters(self):
         return self.lineEdit_new_width.text(), self.lineEdit_new_height.text()
