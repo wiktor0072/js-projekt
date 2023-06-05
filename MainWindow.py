@@ -257,7 +257,75 @@ class Ui_MainWindow(QMainWindow):
             self.check_redo_btn()
             self.activate_edit_buttons()
 
+    def activate_edit_buttons(self):
+        self.btn_flip_right.clicked.connect(self.picture.rotate_right)
+        self.btn_flip_right.clicked.connect(lambda: self.display_picture(self.picture.get_curr_pic()))
+        self.btn_flip_right.clicked.connect(self.check_undo_redo)
 
+        self.btn_flip_left.clicked.connect(self.picture.rotate_left)
+        self.btn_flip_left.clicked.connect(lambda: self.display_picture(self.picture.get_curr_pic()))
+        self.btn_flip_left.clicked.connect(self.check_undo_redo)
+
+        self.btn_flip_vertical.clicked.connect(self.picture.flip_vertical)
+        self.btn_flip_vertical.clicked.connect(lambda: self.display_picture(self.picture.get_curr_pic()))
+        self.btn_flip_vertical.clicked.connect(self.check_undo_redo)
+
+        self.btn_undo.clicked.connect(self.picture.prev)
+        self.btn_undo.clicked.connect(lambda: self.display_picture(self.picture.get_curr_pic()))
+        self.btn_undo.clicked.connect(self.check_undo_redo)
+
+        self.btn_redo.clicked.connect(self.picture.next)
+        self.btn_redo.clicked.connect(lambda: self.display_picture(self.picture.get_curr_pic()))
+        self.btn_redo.clicked.connect(self.check_undo_redo)
+
+        self.slider_brightness.valueChanged.connect(
+            lambda: self.display_picture(self.picture.set_brightness(self.slider_brightness.value())))
+        self.slider_brightness.sliderReleased.connect(
+            lambda: self.picture.append(Image.fromqpixmap(self.label_pic.pixmap())))
+        self.slider_brightness.sliderReleased.connect(self.check_undo_redo)
+
+        self.slider_contrast.valueChanged.connect(
+            lambda: self.display_picture(self.picture.set_contrast(self.slider_contrast.value())))
+        self.slider_contrast.sliderReleased.connect(
+            lambda: self.picture.append(Image.fromqpixmap(self.label_pic.pixmap())))
+        self.slider_contrast.sliderReleased.connect(self.check_undo_redo)
+
+        self.comboBox_filter.currentIndexChanged.connect(
+            lambda: self.picture.change_filter(self.comboBox_filter.currentText()))
+        self.comboBox_filter.currentIndexChanged.connect(lambda: self.display_picture(self.picture.get_curr_pic()))
+
+    def save_image(self):
+        self.save_dialog = QFileDialog()
+        path, _ = self.save_dialog.getSaveFileName(self.save_dialog, "Save Window", "", "PNG Files (*.png);;JPEG Files "
+                                                                        "(*.jpg);;PPM Files (*.ppm);;GIF Files (*.gif);;"
+                                                                        "TIFF Files (*.tiff);;BMP Files (*.bmp)")
+        if path:
+            self.picture.save(path)
+
+    def display_picture(self, image):
+        self.label_pic.clear()
+        self.label_pic.resize(771, 551)
+        qimage = ImageQt.ImageQt(image)
+        pixmap = QPixmap.fromImage(qimage)
+        self.label_pic.setPixmap(self.scale_pixmap(pixmap))
+        self.coeff_X = self.picture.get_curr_pic().width / self.label_pic.width()
+        self.coeff_Y = self.picture.get_curr_pic().height / self.label_pic.height()
+
+    def check_undo_btn(self):
+        if self.picture.is_first():
+            self.btn_undo.setDisabled(True)
+        else:
+            self.btn_undo.setEnabled(True)
+
+    def check_redo_btn(self):
+        if self.picture.is_last():
+            self.btn_redo.setDisabled(True)
+        else:
+            self.btn_redo.setEnabled(True)
+
+    def check_undo_redo(self):
+        self.check_undo_btn()
+        self.check_redo_btn()
 
 
 
