@@ -23,6 +23,7 @@ from AddTextDialog import Ui_AddTextDialog
 from RescaleDialog import Ui_RescaleDialog
 from picture import Picture
 from SaveDialog import Ui_SaveDialog
+from label import MyLabel
 
 
 class Ui_MainWindow(QMainWindow):
@@ -45,7 +46,7 @@ class Ui_MainWindow(QMainWindow):
         self.horizontalLayout_pic.setObjectName(u"horizontalLayout_pic")
         self.horizontalLayout_pic.setContentsMargins(0, 0, 0, 0)
 
-        self.label_pic = QLabel(self.horizontalLayoutWidget)
+        self.label_pic = MyLabel(self.horizontalLayoutWidget)
         self.label_pic.setObjectName(u"label_pic")
         self.horizontalLayout_pic.addWidget(self.label_pic)
 
@@ -244,6 +245,15 @@ class Ui_MainWindow(QMainWindow):
         self.btn_redo.setText("")
     # retranslateUi
 
+    def closeEvent(self, event):
+        save_dialog = Ui_SaveDialog(self)
+        if self.picture.saved:
+            event.accept()
+        elif save_dialog.exec() == Ui_SaveDialog.Accepted:
+            event.accept()
+        else:
+            event.ignore()
+
     def load_image(self):
         self.load_dialog = QFileDialog()
         self.load_dialog.setFileMode(QFileDialog.ExistingFile)
@@ -365,6 +375,7 @@ class Ui_MainWindow(QMainWindow):
                 self.display_picture(self.picture.get_curr_pic())
                 self.check_undo_redo()
                 self.selection_rect = QRect()
+                self.label_pic.set_original_mouse_events()
 
     def paint_event(self, event):
         painter = QPainter(self.label_pic)
