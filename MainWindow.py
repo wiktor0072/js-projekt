@@ -260,8 +260,7 @@ class Ui_MainWindow(QMainWindow):
         self.load_dialog.setNameFilter("Image Files (*.png *jpg *.bmp *.ppm *.gif *.tiff *.bmp)")
         if self.load_dialog.exec():
             self.picture = Picture(Image.open(self.load_dialog.selectedFiles()[0]))
-            image = self.picture.get_curr_pic()
-            self.display_picture(image)
+            self.display_picture(self.picture.get_curr_pic())
             self.activate_widgets(True)
             self.check_redo_btn()
             self.activate_edit_buttons()

@@ -6,7 +6,7 @@ class Picture:
 
     def __init__(self, first_pic):
         self.history = [first_pic]
-        self.saved = True
+        self.saved = [0]
         self.idx = 0
         self.unfiltered = None
         self.filter_counter = 0
@@ -37,6 +37,8 @@ class Picture:
         if self.idx == 0:
             raise IndexError("Index out of bounds")
         self.idx -= 1
+        if self.idx == 0:
+            self.saved = True
 
     def next(self):
         if self.idx >= len(self.history):
