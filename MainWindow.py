@@ -155,7 +155,7 @@ class Ui_MainWindow(QMainWindow):
 
         self.btn_add_text = QPushButton(self.verticalLayoutWidget)
         self.btn_add_text.setObjectName(u"btn_add_text")
-        # self.btn_add_text.clicked.connect(self.add_text_init)
+        self.btn_add_text.clicked.connect(self.add_text_init)
 
         self.verticalLayout_options.addWidget(self.btn_add_text)
 
@@ -317,6 +317,26 @@ class Ui_MainWindow(QMainWindow):
         self.label_pic.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.label_pic.setScaledContents(True)
         return scaled_pixmap
+
+    def add_text_init(self):
+
+        def mouse_press_event(event):
+            if event.button() == Qt.LeftButton:
+                coeff_X, coeff_Y = self.get_picture_coefficients()
+                self.picture.set_text(parameters[0], parameters[1], parameters[2], parameters[3], coeff_X * event.pos().x(),
+                                      coeff_Y * event.pos().y())
+                self.display_picture(self.picture.get_curr_pic())
+                self.check_undo_redo()
+
+        self.label_pic.mousePressEvent = mouse_press_event
+        self.add_text_dialog = Ui_AddTextDialog(self)
+        result = self.add_text_dialog.exec()
+
+        if result == QDialog.Accepted:
+            parameters = self.add_text_dialog.get_parameters()
+
+    def get_picture_coefficients(self):
+        return self.picture.get_curr_pic().width / self.label_pic.width(), self.picture.get_curr_pic().height / self.label_pic.height()
 
     def activate_widgets(self, active):
         self.btn_save.setEnabled(active)

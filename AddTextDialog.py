@@ -189,5 +189,22 @@ class Ui_AddTextDialog(QDialog):
         self.label_text.setText(QCoreApplication.translate("Dialog", u"Text", None))
     # retranslateUi
 
+    def get_parameters(self):
+        return self.textEdit.toPlainText(), self.get_color(), self.comboBox_font.currentText(), self.spinBox_size.value()
 
+    def get_color(self):
+        if self.radioButton_red.isChecked():
+            return 'red'
+        elif self.radioButton_orange.isChecked():
+            return 'orange'
+        elif self.radioButton_yellow.isChecked():
+            return 'yellow'
+        elif self.radioButton_green.isChecked():
+            return 'green'
+        elif self.radioButton_blue.isChecked():
+            return 'blue'
+        elif self.radioButton_black.isChecked():
+            return 'black'
+        elif self.radioButton_white.isChecked():
+            return 'white'
 
