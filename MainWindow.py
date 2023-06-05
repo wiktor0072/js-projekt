@@ -245,6 +245,18 @@ class Ui_MainWindow(QMainWindow):
         self.btn_redo.setText("")
     # retranslateUi
 
+    def load_image(self):
+        self.load_dialog = QFileDialog()
+        self.load_dialog.setFileMode(QFileDialog.ExistingFile)
+        self.load_dialog.setNameFilter("Image Files (*.png *jpg *.bmp *.ppm *.gif *.tiff *.bmp)")
+        if self.load_dialog.exec():
+            self.picture = Picture(Image.open(self.load_dialog.selectedFiles()[0]))
+            image = self.picture.get_curr_pic()
+            self.display_picture(image)
+            self.activate_widgets(True)
+            self.check_redo_btn()
+            self.activate_edit_buttons()
+
 
 
 
