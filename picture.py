@@ -53,6 +53,50 @@ class Picture:
             return True
         return False
 
+    def set_brightness(self, value):
+        return ImageEnhance.Brightness(self.get_curr_pic()).enhance(value/50)
+
+    def set_contrast(self, value):
+        return ImageEnhance.Contrast(self.get_curr_pic()).enhance(value/50)
+
+    def get_unfiltered(self):
+        self.history.append(self.unfiltered)
+        self.idx = len(self.history) - 1
+
+    def set_black_white_filter(self):
+        self.history.append(self.get_curr_pic().convert('L'))
+        self.idx = len(self.history) - 1
+
+    def set_sepia_tone_filter(self):
+        self.history.append(ImageEnhance.Color(self.get_curr_pic()).enhance(0.5))
+        # self.idx = len(self.history) - 1
+        self.update()
+
+    def set_inverted_colors(self):
+        self.history.append(ImageOps.invert(self.get_curr_pic()))
+        # self.idx = len(self.history) - 1
+        self.update()
+
+    def sharpen_edges(self):
+        self.history.append(self.get_curr_pic().filter(ImageFilter.SHARPEN))
+        # self.idx = len(self.history) - 1
+        self.update()
+
+    def change_filter(self, filter):
+        if self.filter_counter == 0:
+            self.unfiltered = self.get_curr_pic().copy()
+        self.filter_counter += 1
+        if filter == 'Normal':
+            self.get_unfiltered()
+        elif filter == 'Black-white':
+            self.set_black_white_filter()
+        elif filter == 'Sepia tone':
+            self.set_sepia_tone_filter()
+        elif filter == 'Inverted':
+            self.set_inverted_colors()
+        elif filter == 'Sharpen':
+            self.sharpen_edges()
+
     def set_text(self, text, color, font, size, x_pos, y_pos):
         font_obj = self.get_font(font, size)
         im = self.get_curr_pic().copy()
