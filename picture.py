@@ -6,7 +6,10 @@ class Picture:
 
     def __init__(self, first_pic):
         self.history = [first_pic]
+        self.saved = True
         self.idx = 0
+        self.unfiltered = None
+        self.filter_counter = 0
 
     def __getitem__(self, item):
         return self.history[item]
@@ -40,6 +43,16 @@ class Picture:
             raise IndexError("Index out of bounds")
         self.idx += 1
 
+    def is_last(self):
+        if self.idx == len(self.history) - 1:
+            return True
+        return False
+
+    def is_first(self):
+        if self.idx == 0:
+            return True
+        return False
+
     def set_text(self, text, color, font, size, x_pos, y_pos):
         font_obj = self.get_font(font, size)
         im = self.get_curr_pic().copy()
@@ -60,9 +73,18 @@ class Picture:
             case 'Times New Roman': return ImageFont.truetype(os.path.join(fonts_folder, 'Times.ttf'), size)
             case 'Verdana': return ImageFont.truetype(os.path.join(fonts_folder, 'verdana.ttf'), size)
 
+    def crop_image(self, parameters):
+        parameters = tuple(int(num) for num in parameters)
+        self.history.append(self.get_curr_pic().crop(parameters))
+        self.update()
+
     def update(self):
         self.history = self.history[:self.idx + 1] + self.history[-1:]
         self.idx = len(self.history) - 1
         self.saved = False
+
+    def save(self, path):
+        self.get_curr_pic().save(path)
+        self.saved = True
 
 

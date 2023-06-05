@@ -161,7 +161,7 @@ class Ui_MainWindow(QMainWindow):
 
         self.btn_crop = QPushButton(self.verticalLayoutWidget)
         self.btn_crop.setObjectName(u"btn_crop")
-        # self.btn_crop.clicked.connect(self.cropping_init)
+        self.btn_crop.clicked.connect(self.cropping_init)
 
         self.verticalLayout_options.addWidget(self.btn_crop)
 
@@ -337,6 +337,46 @@ class Ui_MainWindow(QMainWindow):
 
     def get_picture_coefficients(self):
         return self.picture.get_curr_pic().width / self.label_pic.width(), self.picture.get_curr_pic().height / self.label_pic.height()
+
+    def cropping_init(self):
+        self.label_pic.mousePressEvent = self.mouse_press_event
+        self.label_pic.mouseMoveEvent = self.mouse_move_event
+        self.label_pic.mouseReleaseEvent = self.mouse_release_event
+        self.label_pic.paintEvent = self.paint_event
+
+    def mouse_press_event(self, event):
+        if event.button() == Qt.LeftButton:
+            self.last_pos = event.pos()
+            self.mouse_pressed = True
+
+    def mouse_move_event(self, event):
+        if self.mouse_pressed:
+            self.current_pos = event.pos()
+            self.selection_rect = QRect(self.last_pos, self.current_pos).normalized()
+            self.display_picture(self.picture.get_curr_pic())
+
+    def mouse_release_event(self, event):
+        if event.button() == Qt.LeftButton:
+            self.mouse_pressed = False
+            if self.current_pos is not None:
+                coeff_X, coeff_Y = self.get_picture_coefficients()
+                parameters = (self.last_pos.x() * coeff_X, self.last_pos.y() * coeff_Y,
+                              self.current_pos.x() * coeff_X, self.current_pos.y() * coeff_Y)
+                self.picture.crop_image(parameters)
+                self.display_picture(self.picture.get_curr_pic())
+                self.check_undo_redo()
+                self.selection_rect = QRect()
+
+    def paint_event(self, event):
+        painter = QPainter(self.label_pic)
+        if self.label_pic.pixmap() is not None:
+            painter.drawPixmap(self.label_pic.rect(), self.label_pic.pixmap())
+        if not self.selection_rect.isNull():
+            pen = QPen(Qt.red, 2, Qt.SolidLine)
+            brush = QBrush(QColor(255, 0, 0, 100))
+            painter.setPen(pen)
+            painter.setBrush(brush)
+            painter.drawRect(self.selection_rect)
 
     def activate_widgets(self, active):
         self.btn_save.setEnabled(active)
