@@ -311,6 +311,26 @@ class Ui_MainWindow(QMainWindow):
         self.coeff_X = self.picture.get_curr_pic().width / self.label_pic.width()
         self.coeff_Y = self.picture.get_curr_pic().height / self.label_pic.height()
 
+    def scale_pixmap(self, pixmap):
+        scaled_pixmap = pixmap.scaled(self.label_pic.width(), self.label_pic.height(),
+                                      aspectMode=Qt.AspectRatioMode.KeepAspectRatio)
+        self.label_pic.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.label_pic.setScaledContents(True)
+        return scaled_pixmap
+
+    def activate_widgets(self, active):
+        self.btn_save.setEnabled(active)
+        self.btn_flip_left.setEnabled(active)
+        self.btn_flip_right.setEnabled(active)
+        self.btn_flip_vertical.setEnabled(active)
+        self.slider_contrast.setEnabled(active)
+        self.slider_brightness.setEnabled(active)
+        self.comboBox_filter.setEnabled(active)
+        self.btn_add_text.setEnabled(active)
+        self.btn_crop.setEnabled(active)
+        self.btn_scaling.setEnabled(active)
+        self.btn_add_picture.setEnabled(active)
+
     def check_undo_btn(self):
         if self.picture.is_first():
             self.btn_undo.setDisabled(True)

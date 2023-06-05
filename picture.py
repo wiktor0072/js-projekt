@@ -15,4 +15,7 @@ class Picture:
         self.history.append(val)
         self.idx = len(self.history) - 1
 
+    def get_curr_pic(self):
+        return self.history[self.idx]
+
 
