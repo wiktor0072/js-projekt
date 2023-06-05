@@ -134,4 +134,6 @@ class Ui_RescaleDialog(QDialog):
         self.label_new_height.setText(QCoreApplication.translate("Dialog", u"New height", None))
     # retranslateUi
 
+    def get_parameters(self):
+        return self.lineEdit_new_width.text(), self.lineEdit_new_height.text()
 

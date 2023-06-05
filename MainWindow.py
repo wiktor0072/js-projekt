@@ -172,7 +172,7 @@ class Ui_MainWindow(QMainWindow):
 
         self.btn_add_picture = QPushButton(self.verticalLayoutWidget)
         self.btn_add_picture.setObjectName(u"btn_add_picture")
-        # self.btn_add_picture.clicked.connect(self.add_picture_init)
+        self.btn_add_picture.clicked.connect(self.add_picture_init)
 
         self.verticalLayout_options.addWidget(self.btn_add_picture)
 
@@ -384,6 +384,28 @@ class Ui_MainWindow(QMainWindow):
             self.picture.resize_image(parameters)
             self.display_picture(self.picture.get_curr_pic())
             self.check_undo_redo()
+
+    def add_picture_init(self):
+
+        def mouse_press_event(event):
+            if event.button() == Qt.LeftButton:
+                coeff_X, coeff_Y = self.get_picture_coefficients()
+                self.picture.add_picture(self.load_dialog.selectedFiles()[0], parameters[0], parameters[1],
+                                         coeff_X * event.pos().x(),
+                                         coeff_Y * event.pos().y())
+                self.display_picture(self.picture.get_curr_pic())
+                self.check_undo_redo()
+
+        self.label_pic.mousePressEvent = mouse_press_event
+        self.load_dialog = QFileDialog()
+        self.load_dialog.setFileMode(QFileDialog.ExistingFile)
+        self.load_dialog.setNameFilter("Image Files (*.png *jpg *.bmp *.ppm *.gif *.tiff *.bmp)")
+
+        if self.load_dialog.exec():
+            img = Image.open(self.load_dialog.selectedFiles()[0])
+            self.scaling_window = Ui_RescaleDialog(self, img.size)
+            if self.scaling_window.exec() == QDialog.Accepted:
+                parameters = self.scaling_window.get_parameters()
 
     def activate_widgets(self, active):
         self.btn_save.setEnabled(active)

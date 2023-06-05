@@ -124,6 +124,13 @@ class Picture:
         self.history.append(self.get_curr_pic().resize(parameters))
         self.update()
 
+    def add_picture(self, path, width, height, x_pos, y_pos):
+        img_to_add = Image.open(path).resize((int(width), int(height))).convert('RGBA')
+        copy = self.get_curr_pic().copy()
+        copy.paste(img_to_add, (int(x_pos), int(y_pos)), img_to_add)
+        self.history.append(copy)
+        self.update()
+
     def update(self):
         self.history = self.history[:self.idx + 1] + self.history[-1:]
         self.idx = len(self.history) - 1
