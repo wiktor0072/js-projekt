@@ -150,7 +150,6 @@ class Ui_MainWindow(QMainWindow):
 
         self.horizontalLayout_fitler.addWidget(self.comboBox_filter)
 
-
         self.verticalLayout_options.addLayout(self.horizontalLayout_fitler)
 
         self.btn_add_text = QPushButton(self.verticalLayoutWidget)
@@ -167,7 +166,7 @@ class Ui_MainWindow(QMainWindow):
 
         self.btn_scaling = QPushButton(self.verticalLayoutWidget)
         self.btn_scaling.setObjectName(u"btn_scaling")
-        # self.btn_scaling.clicked.connect(self.scaling_init)
+        self.btn_scaling.clicked.connect(self.scaling_init)
 
         self.verticalLayout_options.addWidget(self.btn_scaling)
 
@@ -377,6 +376,14 @@ class Ui_MainWindow(QMainWindow):
             painter.setPen(pen)
             painter.setBrush(brush)
             painter.drawRect(self.selection_rect)
+
+    def scaling_init(self):
+        self.scaling_window = Ui_RescaleDialog(self, self.picture.get_curr_pic().size)
+        if self.scaling_window.exec() == QDialog.Accepted:
+            parameters = self.scaling_window.get_parameters()
+            self.picture.resize_image(parameters)
+            self.display_picture(self.picture.get_curr_pic())
+            self.check_undo_redo()
 
     def activate_widgets(self, active):
         self.btn_save.setEnabled(active)

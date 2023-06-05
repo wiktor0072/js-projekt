@@ -69,17 +69,14 @@ class Picture:
 
     def set_sepia_tone_filter(self):
         self.history.append(ImageEnhance.Color(self.get_curr_pic()).enhance(0.5))
-        # self.idx = len(self.history) - 1
         self.update()
 
     def set_inverted_colors(self):
         self.history.append(ImageOps.invert(self.get_curr_pic()))
-        # self.idx = len(self.history) - 1
         self.update()
 
     def sharpen_edges(self):
         self.history.append(self.get_curr_pic().filter(ImageFilter.SHARPEN))
-        # self.idx = len(self.history) - 1
         self.update()
 
     def change_filter(self, filter):
@@ -120,6 +117,11 @@ class Picture:
     def crop_image(self, parameters):
         parameters = tuple(int(num) for num in parameters)
         self.history.append(self.get_curr_pic().crop(parameters))
+        self.update()
+
+    def resize_image(self, parameters):
+        parameters = tuple(int(num) for num in parameters)
+        self.history.append(self.get_curr_pic().resize(parameters))
         self.update()
 
     def update(self):
