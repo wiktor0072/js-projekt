@@ -115,9 +115,17 @@ class Picture:
             case 'Verdana': return ImageFont.truetype(os.path.join(fonts_folder, 'verdana.ttf'), size)
 
     def crop_image(self, parameters):
-        parameters = tuple(int(num) for num in parameters)
-        self.history.append(self.get_curr_pic().crop(parameters))
+        parameters = [int(num) for num in parameters]
+        self.check_coordinates(parameters, 0, 2)
+        self.check_coordinates(parameters, 1, 3)
+        self.history.append(self.get_curr_pic().crop(tuple(parameters)))
         self.update()
+
+    def check_coordinates(self, coords, idx1, idx2):
+        if coords[idx1] > coords[idx2]:
+            temp = coords[idx1]
+            coords[idx1] = coords[idx2]
+            coords[idx2] = temp
 
     def resize_image(self, parameters):
         parameters = tuple(int(num) for num in parameters)
