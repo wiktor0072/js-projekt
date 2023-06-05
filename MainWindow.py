@@ -155,25 +155,25 @@ class Ui_MainWindow(QMainWindow):
 
         self.btn_add_text = QPushButton(self.verticalLayoutWidget)
         self.btn_add_text.setObjectName(u"btn_add_text")
-        self.btn_add_text.clicked.connect(self.add_text_init)
+        # self.btn_add_text.clicked.connect(self.add_text_init)
 
         self.verticalLayout_options.addWidget(self.btn_add_text)
 
         self.btn_crop = QPushButton(self.verticalLayoutWidget)
         self.btn_crop.setObjectName(u"btn_crop")
-        self.btn_crop.clicked.connect(self.cropping_init)
+        # self.btn_crop.clicked.connect(self.cropping_init)
 
         self.verticalLayout_options.addWidget(self.btn_crop)
 
         self.btn_scaling = QPushButton(self.verticalLayoutWidget)
         self.btn_scaling.setObjectName(u"btn_scaling")
-        self.btn_scaling.clicked.connect(self.scaling_init)
+        # self.btn_scaling.clicked.connect(self.scaling_init)
 
         self.verticalLayout_options.addWidget(self.btn_scaling)
 
         self.btn_add_picture = QPushButton(self.verticalLayoutWidget)
         self.btn_add_picture.setObjectName(u"btn_add_picture")
-        self.btn_add_picture.clicked.connect(self.add_picture_init)
+        # self.btn_add_picture.clicked.connect(self.add_picture_init)
 
         self.verticalLayout_options.addWidget(self.btn_add_picture)
 
