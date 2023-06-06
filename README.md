@@ -11,3 +11,5 @@ The app contains functionalities that allow basic manipulation of image paramete
 - image can be saved
 - made changes can be undone or redone
 - all the edit functionalities won't be available until the image is loaded
+
+In order to run the app, invoke main.py file as a script.
