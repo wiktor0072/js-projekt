@@ -4,9 +4,9 @@ import os
 
 class Picture:
 
-    def __init__(self, first_pic):
-        self.history = [first_pic]
-        self.saved = [0]
+    def __init__(self, path):
+        self.history = [Image.open(path)]
+        self.saved = True
         self.idx = 0
         self.unfiltered = None
         self.filter_counter = 0
@@ -22,15 +22,15 @@ class Picture:
         return self.history[self.idx]
 
     def rotate_right(self):
-        self.history.append(self.history[self.idx].rotate(-90, expand=True))
+        self.history.append(self.get_curr_pic().rotate(-90, expand=True))
         self.update()
 
     def rotate_left(self):
-        self.history.append(self.history[self.idx].rotate(90, expand=True))
+        self.history.append(self.get_curr_pic().rotate(90, expand=True))
         self.update()
 
     def flip_vertical(self):
-        self.history.append(self.history[self.idx].transpose(Image.FLIP_LEFT_RIGHT))
+        self.history.append(self.get_curr_pic().transpose(Image.FLIP_LEFT_RIGHT))
         self.update()
 
     def prev(self):
@@ -63,6 +63,7 @@ class Picture:
 
     def get_unfiltered(self):
         self.history.append(self.unfiltered)
+        self.filter_counter = 0
         self.idx = len(self.history) - 1
 
     def set_black_white_filter(self):
@@ -85,16 +86,12 @@ class Picture:
         if self.filter_counter == 0:
             self.unfiltered = self.get_curr_pic().copy()
         self.filter_counter += 1
-        if filter == 'Normal':
-            self.get_unfiltered()
-        elif filter == 'Black-white':
-            self.set_black_white_filter()
-        elif filter == 'Sepia tone':
-            self.set_sepia_tone_filter()
-        elif filter == 'Inverted':
-            self.set_inverted_colors()
-        elif filter == 'Sharpen':
-            self.sharpen_edges()
+        match filter:
+            case 'Normal': self.get_unfiltered()
+            case 'Black-white': self.set_black_white_filter()
+            case 'Sepia tone': self.set_sepia_tone_filter()
+            case 'Inverted': self.set_inverted_colors()
+            case 'Sharpen': self.sharpen_edges()
 
     def set_text(self, text, color, font, size, x_pos, y_pos):
         font_obj = self.get_font(font, size)
