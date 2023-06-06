@@ -21,9 +21,9 @@ from PySide6.QtWidgets import (QComboBox, QGridLayout, QHBoxLayout,
 
 from AddTextDialog import Ui_AddTextDialog
 from RescaleDialog import Ui_RescaleDialog
-from picture import Picture
+from Picture import Picture
 from SaveDialog import Ui_SaveDialog
-from label import MyLabel
+from Label import MyLabel
 
 
 class Ui_MainWindow(QMainWindow):
