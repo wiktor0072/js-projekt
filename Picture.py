@@ -5,10 +5,10 @@ import os
 class Picture:
 
     def __init__(self, path):
-        self.history = [Image.open(path)]
-        self.saved = True
-        self.idx = 0
-        self.unfiltered = None
+        self.history = [Image.open(path)]   # history of edition
+        self.saved = True                   # informs if image bounded with current idx was saved
+        self.idx = 0                        # index of current image
+        self.unfiltered = None              # picture that wasn't affected by any filters
         self.filter_counter = 0
 
     def __getitem__(self, item):
@@ -83,6 +83,8 @@ class Picture:
         self.update()
 
     def change_filter(self, filter):
+        # if counter is set to 0, it means the image hasn't been filtered yet, and we can assign it to unfiltered
+        # variable which would be unfiltered one
         if self.filter_counter == 0:
             self.unfiltered = self.get_curr_pic().copy()
         self.filter_counter += 1
@@ -97,6 +99,7 @@ class Picture:
         font_obj = self.get_font(font, size)
         im = self.get_curr_pic().copy()
         draw_text = ImageDraw.Draw(im)
+        # rescaling coordinates in order to be accurate to real size of the image
         x = int((x_pos / self.get_curr_pic().width) * self.get_curr_pic().width)
         y = int((y_pos / self.get_curr_pic().height) * self.get_curr_pic().height)
         draw_text.text((x, y), text, fill=color, font=font_obj)
@@ -104,6 +107,7 @@ class Picture:
         self.update()
 
     def get_font(self, name, size):
+        # returns a font object depending on string
         fonts_folder = 'C:\\Windows\\Fonts'
         match name:
             case 'Arial': return ImageFont.truetype(os.path.join(fonts_folder, 'Arial.ttf'), size)
@@ -121,12 +125,14 @@ class Picture:
         self.update()
 
     def check_coordinates(self, coords, idx1, idx2):
+        # checks if starting coordinate is bigger than second one, if so the indexes are switched
         if coords[idx1] > coords[idx2]:
             temp = coords[idx1]
             coords[idx1] = coords[idx2]
             coords[idx2] = temp
 
     def resize_image(self, parameters):
+        # parameters variable contains tuple of new width and size of an image
         parameters = tuple(int(num) for num in parameters)
         self.history.append(self.get_curr_pic().resize(parameters))
         self.update()
@@ -139,6 +145,7 @@ class Picture:
         self.update()
 
     def update(self):
+        # deletes objects of images in bounds between previous view picture and just created one
         self.history = self.history[:self.idx + 1] + self.history[-1:]
         self.idx = len(self.history) - 1
         self.saved = False

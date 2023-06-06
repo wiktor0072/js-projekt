@@ -324,6 +324,7 @@ class Ui_MainWindow(QMainWindow):
         self.label_size.setText('Size: ' + str(self.picture.get_curr_pic().width) + ' x ' + str(self.picture.get_curr_pic().height))
 
     def scale_pixmap(self, pixmap):
+        # scaling pixmap in order to fit the proportions of an image
         scaled_pixmap = pixmap.scaled(self.label_pic.width(), self.label_pic.height(),
                                       aspectMode=Qt.AspectRatioMode.KeepAspectRatio)
         self.label_pic.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -347,9 +348,11 @@ class Ui_MainWindow(QMainWindow):
             text, color, font, size = self.add_text_dialog.get_parameters()
 
     def get_picture_coefficients(self):
+        # return coefficients how many times is actual picture bigger or smaller than the pixmap that contains it
         return self.picture.get_curr_pic().width / self.label_pic.width(), self.picture.get_curr_pic().height / self.label_pic.height()
 
     def cropping_init(self):
+        # assigning mouse events to label that contains pixmap in order to crop selected area
         self.label_pic.mousePressEvent = self.mouse_press_event
         self.label_pic.mouseMoveEvent = self.mouse_move_event
         self.label_pic.mouseReleaseEvent = self.mouse_release_event
@@ -357,11 +360,13 @@ class Ui_MainWindow(QMainWindow):
 
     def mouse_press_event(self, event):
         if event.button() == Qt.LeftButton:
+            # variable containing starting coordinates last position of the mouse
             self.last_pos = event.pos()
             self.mouse_pressed = True
 
     def mouse_move_event(self, event):
         if self.mouse_pressed:
+            # variable containing finish coordinates of the mouse
             self.current_pos = event.pos()
             self.selection_rect = QRect(self.last_pos, self.current_pos).normalized()
             self.display_picture(self.picture.get_curr_pic())
@@ -377,6 +382,7 @@ class Ui_MainWindow(QMainWindow):
                 self.display_picture(self.picture.get_curr_pic())
                 self.check_undo_redo()
                 self.selection_rect = QRect()
+                # assigning default mouse events to label to disable the ability of cropping
                 self.label_pic.set_original_mouse_events()
 
     def paint_event(self, event):

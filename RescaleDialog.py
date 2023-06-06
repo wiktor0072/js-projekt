@@ -8,16 +8,11 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform, QIntValidator)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
-    QVBoxLayout, QWidget, QMessageBox)
+import PySide6.QtGui
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect,
+                            Qt)
+from PySide6.QtWidgets import (QDialog, QDialogButtonBox,
+                               QHBoxLayout, QLabel, QLineEdit, QVBoxLayout, QWidget, QMessageBox)
 
 
 class Ui_RescaleDialog(QDialog):
@@ -118,7 +113,7 @@ class Ui_RescaleDialog(QDialog):
         self.buttonBox.accepted.connect(self.validate_input)
         self.buttonBox.rejected.connect(self.reject)
 
-        self.validator = QIntValidator()
+        self.validator = PySide6.QtGui.QIntValidator()
         self.lineEdit_new_width.setValidator(self.validator)
         self.lineEdit_new_height.setValidator(self.validator)
 
