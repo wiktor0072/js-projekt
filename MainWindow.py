@@ -265,10 +265,9 @@ class Ui_MainWindow(QMainWindow):
         self.load_dialog.setFileMode(QFileDialog.ExistingFile)
         self.load_dialog.setNameFilter("Image Files (*.png *jpg *.bmp *.ppm *.gif *.tiff *.bmp)")
         if self.load_dialog.exec():
-            self.picture = Picture(Image.open(self.load_dialog.selectedFiles()[0]))
+            self.picture = Picture(self.load_dialog.selectedFiles()[0])
             self.display_picture(self.picture.get_curr_pic())
             self.activate_widgets(True)
-            self.check_redo_btn()
             self.activate_edit_buttons()
 
     def activate_edit_buttons(self):
@@ -322,8 +321,6 @@ class Ui_MainWindow(QMainWindow):
         qimage = ImageQt.ImageQt(image)
         pixmap = QPixmap.fromImage(qimage)
         self.label_pic.setPixmap(self.scale_pixmap(pixmap))
-        self.coeff_X = self.picture.get_curr_pic().width / self.label_pic.width()
-        self.coeff_Y = self.picture.get_curr_pic().height / self.label_pic.height()
         self.label_size.setText('Size: ' + str(self.picture.get_curr_pic().width) + ' x ' + str(self.picture.get_curr_pic().height))
 
     def scale_pixmap(self, pixmap):
@@ -334,11 +331,10 @@ class Ui_MainWindow(QMainWindow):
         return scaled_pixmap
 
     def add_text_init(self):
-
         def mouse_press_event(event):
             if event.button() == Qt.LeftButton:
                 coeff_X, coeff_Y = self.get_picture_coefficients()
-                self.picture.set_text(parameters[0], parameters[1], parameters[2], parameters[3], coeff_X * event.pos().x(),
+                self.picture.set_text(text, color, font, size, coeff_X * event.pos().x(),
                                       coeff_Y * event.pos().y())
                 self.display_picture(self.picture.get_curr_pic())
                 self.check_undo_redo()
@@ -348,7 +344,7 @@ class Ui_MainWindow(QMainWindow):
         result = self.add_text_dialog.exec()
 
         if result == QDialog.Accepted:
-            parameters = self.add_text_dialog.get_parameters()
+            text, color, font, size = self.add_text_dialog.get_parameters()
 
     def get_picture_coefficients(self):
         return self.picture.get_curr_pic().width / self.label_pic.width(), self.picture.get_curr_pic().height / self.label_pic.height()
@@ -375,9 +371,9 @@ class Ui_MainWindow(QMainWindow):
             self.mouse_pressed = False
             if self.current_pos is not None:
                 coeff_X, coeff_Y = self.get_picture_coefficients()
-                parameters = (self.last_pos.x() * coeff_X, self.last_pos.y() * coeff_Y,
+                coordinates = (self.last_pos.x() * coeff_X, self.last_pos.y() * coeff_Y,
                               self.current_pos.x() * coeff_X, self.current_pos.y() * coeff_Y)
-                self.picture.crop_image(parameters)
+                self.picture.crop_image(coordinates)
                 self.display_picture(self.picture.get_curr_pic())
                 self.check_undo_redo()
                 self.selection_rect = QRect()
@@ -403,11 +399,10 @@ class Ui_MainWindow(QMainWindow):
             self.check_undo_redo()
 
     def add_picture_init(self):
-
         def mouse_press_event(event):
             if event.button() == Qt.LeftButton:
                 coeff_X, coeff_Y = self.get_picture_coefficients()
-                self.picture.add_picture(self.load_dialog.selectedFiles()[0], parameters[0], parameters[1],
+                self.picture.add_picture(self.load_dialog.selectedFiles()[0], width, height,
                                          coeff_X * event.pos().x(),
                                          coeff_Y * event.pos().y())
                 self.display_picture(self.picture.get_curr_pic())
@@ -422,7 +417,7 @@ class Ui_MainWindow(QMainWindow):
             img = Image.open(self.load_dialog.selectedFiles()[0])
             self.scaling_window = Ui_RescaleDialog(self, img.size)
             if self.scaling_window.exec() == QDialog.Accepted:
-                parameters = self.scaling_window.get_parameters()
+                width, height = self.scaling_window.get_parameters()
 
     def activate_widgets(self, active):
         self.btn_save.setEnabled(active)
