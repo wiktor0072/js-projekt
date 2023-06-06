@@ -31,6 +31,7 @@ class Ui_MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.picture = None
 
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -177,6 +178,10 @@ class Ui_MainWindow(QMainWindow):
 
         self.verticalLayout_options.addWidget(self.btn_add_picture)
 
+        self.label_size = QLabel(self.verticalLayoutWidget)
+        self.label_size.setObjectName(u"label_size")
+        self.verticalLayout_options.addWidget(self.label_size)
+
         self.gridLayoutWidget = QWidget(self.centralwidget)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
         self.gridLayoutWidget.setGeometry(QRect(20, 10, 321, 41))
@@ -241,13 +246,14 @@ class Ui_MainWindow(QMainWindow):
         self.btn_crop.setText(QCoreApplication.translate("MainWindow", u"Crop", None))
         self.btn_scaling.setText(QCoreApplication.translate("MainWindow", u"Scaling", None))
         self.btn_add_picture.setText(QCoreApplication.translate("MainWindow", u"Add picture", None))
+        self.label_size.setText("")
         self.btn_undo.setText("")
         self.btn_redo.setText("")
     # retranslateUi
 
     def closeEvent(self, event):
         save_dialog = Ui_SaveDialog(self)
-        if self.picture.saved:
+        if self.picture is None or self.picture.saved:
             event.accept()
         elif save_dialog.exec() == Ui_SaveDialog.Accepted:
             event.accept()
@@ -318,6 +324,7 @@ class Ui_MainWindow(QMainWindow):
         self.label_pic.setPixmap(self.scale_pixmap(pixmap))
         self.coeff_X = self.picture.get_curr_pic().width / self.label_pic.width()
         self.coeff_Y = self.picture.get_curr_pic().height / self.label_pic.height()
+        self.label_size.setText('Size: ' + str(self.picture.get_curr_pic().width) + ' x ' + str(self.picture.get_curr_pic().height))
 
     def scale_pixmap(self, pixmap):
         scaled_pixmap = pixmap.scaled(self.label_pic.width(), self.label_pic.height(),
