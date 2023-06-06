@@ -10,3 +10,4 @@ The app contains functionalities that allow basic manipulation of image paramete
 - scaling by providing new image size in the dialog window
 - image can be saved
 - made changes can be undone or redone
+- all the edit functionalities won't be available until the image is loaded
